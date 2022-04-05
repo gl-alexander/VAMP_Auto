@@ -10,6 +10,7 @@ namespace VAMP_Auto.Controllers
 {
     public class UserController : Controller
     {
+        bool loggedIn = false;
         private int currentUserId = -1;
         const int ADMIN_ID = 1;
         public IActionResult Index()
@@ -70,6 +71,7 @@ namespace VAMP_Auto.Controllers
                         if (user.Password == key)
                         {
                             currentUserId = user.UserId;
+                            loggedIn = true;
                             return "Done!";
                         }
                         else return "Invalid password";
@@ -86,6 +88,7 @@ namespace VAMP_Auto.Controllers
         public void LogOut()
         {
             this.currentUserId = -1;
+            loggedIn = false;
         }
 
 
@@ -180,5 +183,6 @@ namespace VAMP_Auto.Controllers
                 return ex.Message;
             }
         }
+
     }
 }
