@@ -155,17 +155,23 @@ namespace VAMP_Auto.Controllers
             }
         }
 
-        public string ShowAllQueries()
+        public string ShowQueries()
         {
             try
             {
                 using(var context = new AppDbContext())
                 {
-                    List<Query> queries = new List<Query>();
+                    List<Query> allQueries = new List<Query>();
+                    List<Query> userQueries = new List<Query>();
                     foreach(var query in context.Queries)
                     {
-                        queries.Add(query);
+                        allQueries.Add(query);
+                        if(query.UserId == currentUserId)
+                        {
+                            userQueries.Add(query);
+                        }
                     }
+                    
                     return "Done!";
                 }
             }
