@@ -28,11 +28,15 @@ namespace VAMPAutoCore.Controllers
         }
 
         [HttpPost]
-        public IActionResult LogIn(string username, string password)
+        public IActionResult LogIn(User user)
         {
+            string username = user.Username;
+            string password = user.Password;
+            return Content($"You entered: {username} and {password}");
+            /*
             if(context.Users.Any(x => x.Username == username))
             {
-                User user = context.Users.First(x => x.Username == username);
+                
                 if(user.Password == password)
                 {
                     token = user;
@@ -44,6 +48,7 @@ namespace VAMPAutoCore.Controllers
                 }
             }
             return View();
+            */
         }
 
         public IActionResult Register()
