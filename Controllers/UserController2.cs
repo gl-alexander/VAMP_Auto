@@ -3,8 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using VAMPAutoCore.Data;
-using VAMPAutoCore.Models;
+using vampCore.Models;
 
 namespace VAMPAutoCore.Controllers
 {
@@ -13,13 +12,14 @@ namespace VAMPAutoCore.Controllers
         User token;
         public IActionResult Index()
         {
-            return View();
+            return View(token);
         }
 
         private readonly AppDbContext context;
         public UserController(AppDbContext _db)
         {
             context = _db;
+            token = new User();
         }
 
         public IActionResult LogIn()
@@ -32,23 +32,21 @@ namespace VAMPAutoCore.Controllers
         {
             string username = user.Username;
             string password = user.Password;
-            return Content($"You entered: {username} and {password}");
-            /*
-            if(context.Users.Any(x => x.Username == username))
+            
+            if(context.Users.Any(x => x.Username == user.Username))
             {
                 
-                if(user.Password == password)
+                if(context.Users.Any(x=>x.Password==user.Password))
                 {
                     token = user;
                     return RedirectToAction("Index");
                 }
                 else
                 {
-                    return View();
+                    return View("LogIn");
                 }
             }
             return View();
-            */
         }
 
         public IActionResult Register()
@@ -62,8 +60,7 @@ namespace VAMPAutoCore.Controllers
             {
                 context.Users.Add(user);
                 context.SaveChanges();
-
-                return RedirectToAction("Index");
+                return RedirectToAction("LogIn");
             }
             return View();
         }
