@@ -1,0 +1,53 @@
+@using Microsoft.AspNetCore.Http;
+@inject IHttpContextAccessor HttpContextAccessor
+
+@model VAMPAutoCore.Models.Query
+
+@{
+    ViewData["Title"] = "Reserve";
+}
+
+<h1>Reserve</h1>
+
+<h4>Query</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Reserve">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div align="center">
+                <h3>Start date:</h3>
+                <div class="alert-info">
+                    <h4>@HttpContextAccessor.HttpContext.Session.GetString("queryStartDate")</h4>
+                </div>
+                <h3>End date:</h3>
+                <div class="alert-info">
+                    <h4>@HttpContextAccessor.HttpContext.Session.GetString("queryEndDate")</h4>
+                </div>
+
+            </div>
+
+            <div class="alert-success" align ="center">
+                <p>Model: @Model.Car.Model</p>
+                <p>Brand: @Model.Car.Brand</p>
+                <p>Year: @Model.Car.Year</p>
+                <p>Capacity: @Model.Car.Capacity</p>
+                <p>Description: @Model.Car.Description</p>
+                <p>Price: @Model.Car.Price</p>
+            </div>
+
+            
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="PickDates">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
