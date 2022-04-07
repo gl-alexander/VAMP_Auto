@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -9,17 +10,18 @@ namespace VAMPAutoCore.Controllers
 {
     public class UserController : Controller
     {
-        User token;
         public IActionResult Index()
         {
-            return View(token);
+            var u = new User();
+            u = context.Users.First(x => x.Username == HttpContext.Session.GetString("username"));
+            return View(u);
         }
 
         private readonly AppDbContext context;
         public UserController(AppDbContext _db)
         {
             context = _db;
-            token = new User();
+            //token = new User();
         }
 
         public IActionResult LogIn()
@@ -30,15 +32,14 @@ namespace VAMPAutoCore.Controllers
         [HttpPost]
         public IActionResult LogIn(User user)
         {
-            string username = user.Username;
-            string password = user.Password;
             
             if(context.Users.Any(x => x.Username == user.Username))
             {
                 
                 if(context.Users.Any(x=>x.Password==user.Password))
                 {
-                    token = user;
+                    user = context.Users.First(x => x.Username == user.Username);
+                    HttpContext.Session.SetString("username", user.Username);
                     return RedirectToAction("Index");
                 }
                 else
@@ -58,11 +59,26 @@ namespace VAMPAutoCore.Controllers
         {
             if (ModelState.IsValid)
             {
-                context.Users.Add(user);
-                context.SaveChanges();
-                return RedirectToAction("LogIn");
+                if(!context.Users.Any(x=>x.Username==user.Username) && !context.Users.Any(x => x.UCN == user.UCN) && !context.Users.Any(x => x.Email == user.Email))
+                {
+                    context.Users.Add(user);
+                    context.SaveChanges();
+                    return RedirectToAction("LogIn");
+                }
+                else
+                {
+                    return RedirectToAction("Register");
+                }
+                
             }
             return View();
         }
+
+        [HttpPost]
+        public IActionResult LogOut(User user)
+        {
+            HttpContext.Session.SetString("username",null);
+            return RedirectToAction("LogIn");
+        } 
     }
 }
