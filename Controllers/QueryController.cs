@@ -63,5 +63,39 @@ namespace VAMPAutoCore.Controllers
             }
             return View(availableCars);
         }
+        
+        public IActionResult Reserve(int id)
+        {
+            Car car = context.Cars.First(x => x.CarId == id);
+            Query query = new Query();
+            query.CarId = id;
+            query.Car = car;
+            this.session.SetString("queryCarId", id.ToString());
+            return View(query);
+        }
+
+        [HttpPost]
+        public IActionResult Reserve(Query query)
+        {
+            DateTime startDate = Convert.ToDateTime(this.session.GetString("queryStartDate"));
+            DateTime endDate = Convert.ToDateTime(this.session.GetString("queryEndDate"));
+            int carId = int.Parse(this.session.GetString("queryCarId"));
+            Car selectedCar = context.Cars.First(x => x.CarId == carId);
+            User currenUser = context.Users.First(x => x.Username == HttpContext.Session.GetString("username"));
+
+            query.User = currenUser;
+            query.Car = selectedCar;
+            query.UserId = currenUser.UserId;
+            query.CarId = carId;
+            query.StartDate = startDate;
+            query.EndDate = endDate;
+            if (ModelState.IsValid)
+            {
+                context.Queries.Add(query);
+                context.SaveChanges();
+                return RedirectToAction("Index", "User");
+            }
+            return RedirectToAction("ShowAvailableCars");
+        }
     }
 }
