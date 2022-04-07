@@ -1,0 +1,14 @@
+@using Microsoft.AspNetCore.Http;
+@inject IHttpContextAccessor HttpContextAccessor
+
+@if (!string.IsNullOrEmpty(HttpContextAccessor.HttpContext.Session.GetString("username")))
+{
+    <a class="btn btn-link" asp-controller="User" asp-action="LogOut">Log Out</a>
+    <a class="btn btn-link" asp-controller="User" asp-action="Index">@HttpContextAccessor.HttpContext.Session.GetString("username")</a>
+
+}
+else
+{
+    <a class="btn btn-link" asp-controller="User" asp-action="LogIn">Log In</a>
+    <a class="btn btn-link" asp-controller="User" asp-action="Register">Register</a>
+}
